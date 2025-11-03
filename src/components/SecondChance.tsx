@@ -1,5 +1,7 @@
 import { CheckCircle2, FileText, Gavel, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import ScrollStack, { ScrollStackItem } from "./ScrollStack";
+import "./ScrollStack.css";
 
 const SecondChance = () => {
   const requirements = [
@@ -112,23 +114,31 @@ const SecondChance = () => {
           <h3 className="text-3xl font-bold text-foreground text-center mb-12">
             🚀 Así funciona tu Segunda Oportunidad
           </h3>
-          <div className="grid md:grid-cols-4 gap-6">
+          <ScrollStack
+            itemDistance={150}
+            itemScale={0.02}
+            itemStackDistance={40}
+            stackPosition="25%"
+            scaleEndPosition="15%"
+            baseScale={0.9}
+            useWindowScroll={true}
+            onStackComplete={() => {}}
+            className="min-h-screen"
+          >
             {process.map((step, index) => (
-              <Card 
-                key={index}
-                className="bg-card border-border hover:shadow-[var(--shadow-soft)] transition-all hover:translate-y-[-4px] animate-scale-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <CardContent className="pt-6 text-center">
-                  <div className="bg-primary/10 w-14 h-14 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <step.icon className="h-7 w-7 text-primary" />
-                  </div>
-                  <h4 className="font-bold text-foreground mb-2 text-base">{step.title}</h4>
-                  <p className="text-sm text-muted-foreground">{step.description}</p>
-                </CardContent>
-              </Card>
+              <ScrollStackItem key={index}>
+                <Card className="bg-card border-border shadow-[var(--shadow-soft)]">
+                  <CardContent className="pt-8 text-center h-full flex flex-col justify-center">
+                    <div className="bg-primary/10 w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-6">
+                      <step.icon className="h-8 w-8 text-primary" />
+                    </div>
+                    <h4 className="font-bold text-foreground mb-4 text-xl">{step.title}</h4>
+                    <p className="text-muted-foreground text-base leading-relaxed">{step.description}</p>
+                  </CardContent>
+                </Card>
+              </ScrollStackItem>
             ))}
-          </div>
+          </ScrollStack>
         </div>
       </div>
     </section>
