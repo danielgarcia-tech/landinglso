@@ -2,9 +2,11 @@ import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo-rua.png";
 import { Menu } from "lucide-react";
 import { useState } from "react";
+import { useModal } from "@/contexts/ModalContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { setShowContactModal, setShowTestimonialsModal } = useModal();
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -37,8 +39,11 @@ const Header = () => {
             >
               Segunda Oportunidad
             </button>
-            <Button onClick={() => scrollToSection("contacto")} size="lg">
+            <Button onClick={() => setShowContactModal(true)} size="lg">
               Contacto
+            </Button>
+            <Button onClick={() => setShowTestimonialsModal(true)} variant="outline" size="lg" className="border-primary text-primary hover:bg-primary/10">
+              Testimonios
             </Button>
           </nav>
 
@@ -67,7 +72,7 @@ const Header = () => {
               Segunda Oportunidad
             </button>
             <Button 
-              onClick={() => scrollToSection("contacto")} 
+              onClick={() => setShowContactModal(true)}
               className="w-full"
             >
               Contacto

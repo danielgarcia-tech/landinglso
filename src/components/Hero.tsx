@@ -3,15 +3,21 @@ import { ArrowRight, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import LSOQuestionnaire from "./LSOQuestionnaire";
 import logo from "@/assets/logo-rua.png";
+import { useModal } from "@/contexts/ModalContext";
 
 const Hero = () => {
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const { setShowContactModal, setShowTestimonialsModal } = useModal();
   const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay
   const [isPaused, setIsPaused] = useState(false);
   const playerRef = useRef<any>(null);
 
   const scrollToContact = () => {
     document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToSecondChance = () => {
+    document.getElementById("segunda-oportunidad")?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -138,7 +144,7 @@ const Hero = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
               <Button 
                 size="lg" 
-                onClick={scrollToContact}
+                onClick={() => setShowContactModal(true)}
                 className="text-base bg-primary hover:bg-primary/90"
               >
                 ¿Hablamos?
@@ -147,7 +153,7 @@ const Hero = () => {
               <Button 
                 variant="outline" 
                 size="lg"
-                onClick={() => document.getElementById("segunda-oportunidad")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={scrollToSecondChance}
                 className="text-base text-black border-white hover:bg-white/10"
               >
                 Conoce la Ley

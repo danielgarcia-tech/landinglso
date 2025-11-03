@@ -13,8 +13,9 @@
 }
 
 .scroll-stack-inner {
-  padding: 20vh 5rem 50rem;
+  padding: 4rem 2rem 50rem;
   min-height: 100vh;
+  background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
 }
 
 .scroll-stack-card-wrapper {
@@ -22,24 +23,159 @@
 }
 
 .scroll-stack-card {
-  transform-origin: top center;
-  will-change: transform, filter;
+  transform-origin: center;
+  will-change: transform, filter, box-shadow;
   backface-visibility: hidden;
   transform-style: preserve-3d;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-  height: 20rem;
-  width: 100%;
-  margin: 30px 0;
+  height: auto;
+  min-height: 20rem;
+  width: 90%;
+  max-width: 600px;
+  margin: 2rem auto;
   padding: 3rem;
-  border-radius: 40px;
+  border-radius: 20px;
   box-sizing: border-box;
   /* Improve mobile performance */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   position: relative;
+  
+  /* Card styling */
+  background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+  
+  /* Animations */
+  animation: cardEnter 0.6s ease-out forwards;
+}
+
+.scroll-stack-card:hover {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-stack-card > * {
+  animation: slideInUp 0.8s ease-out forwards;
+}
+
+.scroll-stack-card h4 {
+  color: #1a1a1a;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.scroll-stack-card p {
+  color: #555555;
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.scroll-stack-card .icon-container {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0066cc 0%, #0088ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+  animation: iconFloat 3s ease-in-out infinite;
+}
+
+.scroll-stack-card .icon-container svg {
+  width: 2rem;
+  height: 2rem;
+  color: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+@keyframes iconFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Stagger animation for multiple cards */
+.scroll-stack-card:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.scroll-stack-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.scroll-stack-card:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.scroll-stack-card:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.scroll-stack-card:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+.scroll-stack-card:nth-child(6) {
+  animation-delay: 0.5s;
 }
 
 .scroll-stack-end {
   width: 100%;
   height: 1px;
+  background: transparent;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .scroll-stack-inner {
+    padding: 2rem 1rem 30rem;
+  }
+  
+  .scroll-stack-card {
+    width: 95%;
+    min-height: 18rem;
+    padding: 2rem;
+    margin: 1.5rem auto;
+  }
+  
+  .scroll-stack-card h4 {
+    font-size: 1.25rem;
+  }
+  
+  .scroll-stack-card p {
+    font-size: 0.9rem;
+  }
 }

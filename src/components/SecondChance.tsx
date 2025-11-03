@@ -1,9 +1,11 @@
-import { CheckCircle2, FileText, Gavel, Sparkles } from "lucide-react";
+import { CheckCircle2, FileText, Gavel, Sparkles, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import ScrollStack, { ScrollStackItem } from "./ScrollStack";
-import "./ScrollStack.css";
+import { useState } from "react";
+import "./SecondChance.css";
 
 const SecondChance = () => {
+  const [activeStep, setActiveStep] = useState(0);
+  
   const requirements = [
     "Ser persona física ",
     "No haber sido condenado por delitos económicos",
@@ -52,8 +54,6 @@ const SecondChance = () => {
       title: "6. Nueva vida financiera",
       description: "Disfruta de tu nueva vida libre de deudas y di adiós a las llamadas de tus acreedores y a la lista de morosos"
     }
-
-
   ];
 
   return (
@@ -111,34 +111,138 @@ const SecondChance = () => {
         </div>
 
         <div>
-          <h3 className="text-3xl font-bold text-foreground text-center mb-12">
+          <h3 className="text-3xl font-bold text-foreground text-center mb-16">
             🚀 Así funciona tu Segunda Oportunidad
           </h3>
-          <ScrollStack
-            itemDistance={150}
-            itemScale={0.02}
-            itemStackDistance={40}
-            stackPosition="25%"
-            scaleEndPosition="15%"
-            baseScale={0.9}
-            useWindowScroll={true}
-            onStackComplete={() => {}}
-            className="min-h-screen"
-          >
-            {process.map((step, index) => (
-              <ScrollStackItem key={index}>
-                <Card className="bg-card border-border shadow-[var(--shadow-soft)]">
-                  <CardContent className="pt-8 text-center h-full flex flex-col justify-center">
-                    <div className="bg-primary/10 w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-6">
-                      <step.icon className="h-8 w-8 text-primary" />
+          
+          {/* Timeline Horizontal */}
+          <div className="max-w-6xl mx-auto">
+            {/* Timeline línea superior */}
+            <div className="hidden md:flex items-center justify-between mb-12 relative">
+              {/* Línea conectora */}
+              <div className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary/50 transform -translate-y-1/2 z-0"></div>
+              
+              {/* Puntos de la timeline */}
+              {process.map((step, index) => (
+                <div
+                  key={index}
+                  className="relative z-10 flex flex-col items-center cursor-pointer group"
+                  onClick={() => setActiveStep(index)}
+                >
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
+                      activeStep === index
+                        ? "bg-primary text-white scale-125 shadow-lg"
+                        : "bg-background border-2 border-primary text-primary group-hover:scale-110"
+                    }`}
+                  >
+                    <step.icon className="w-6 h-6" />
+                  </div>
+                  <p className="text-xs font-semibold mt-3 text-center max-w-24 text-foreground">
+                    {step.title.split(".")[1].trim()}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Contenido del paso seleccionado */}
+            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 shadow-lg animate-fade-in">
+              <CardContent className="pt-8 pb-8">
+                <div className="text-center space-y-6">
+                  <div className="flex justify-center">
+                    <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
+                      {(() => {
+                        const IconComponent = process[activeStep].icon;
+                        return <IconComponent className="w-8 h-8 text-primary" />;
+                      })()}
                     </div>
-                    <h4 className="font-bold text-foreground mb-4 text-xl">{step.title}</h4>
-                    <p className="text-muted-foreground text-base leading-relaxed">{step.description}</p>
-                  </CardContent>
-                </Card>
-              </ScrollStackItem>
-            ))}
-          </ScrollStack>
+                  </div>
+                  <div>
+                    <h4 className="text-2xl font-bold text-foreground mb-3">
+                      {process[activeStep].title}
+                    </h4>
+                    <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                      {process[activeStep].description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Navegación paso a paso */}
+                <div className="flex justify-between items-center mt-10 pt-6 border-t border-primary/10">
+                  <button
+                    onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
+                    disabled={activeStep === 0}
+                    className="px-6 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    ← Anterior
+                  </button>
+                  
+                  <div className="flex gap-2">
+                    {process.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setActiveStep(index)}
+                        className={`w-2 h-2 rounded-full transition-all ${
+                          activeStep === index ? "bg-primary w-8" : "bg-primary/30 hover:bg-primary/50"
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => setActiveStep(Math.min(process.length - 1, activeStep + 1))}
+                    disabled={activeStep === process.length - 1}
+                    className="px-6 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                  >
+                    Siguiente <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Versión móvil - carrusel simple */}
+            <div className="md:hidden mt-8 space-y-4">
+              <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                <CardContent className="pt-6 pb-6">
+                  <div className="text-center space-y-4">
+                    <div className="flex justify-center">
+                      <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                        {(() => {
+                          const IconComponent = process[activeStep].icon;
+                          return <IconComponent className="w-7 h-7 text-primary" />;
+                        })()}
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold text-foreground mb-2">
+                        {process[activeStep].title}
+                      </h4>
+                      <p className="text-muted-foreground text-sm">
+                        {process[activeStep].description}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="flex justify-between gap-2">
+                <button
+                  onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
+                  disabled={activeStep === 0}
+                  className="flex-1 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                >
+                  ← Anterior
+                </button>
+                <button
+                  onClick={() => setActiveStep(Math.min(process.length - 1, activeStep + 1))}
+                  disabled={activeStep === process.length - 1}
+                  className="flex-1 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                >
+                  Siguiente →
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

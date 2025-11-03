@@ -450,11 +450,44 @@ const LSOQuestionnaire: React.FC = () => {
     );
   }
 
+  // Calcular el stepper
+  const totalSteps = assetStage === 'collecting' ? ASSET_QUESTIONS.length : LSO_QUESTIONS.length;
+  const activeStep = assetStage === 'collecting' ? currentAssetStep : currentStep;
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <Card className="w-full max-w-2xl animate-scale-in">
         <CardHeader>
           <div className="space-y-4">
+            {/* Stepper Moderno */}
+            <div className="w-full overflow-x-auto pb-4">
+              <div className="flex items-center justify-between min-w-max px-2">
+                {Array.from({ length: totalSteps }).map((_, idx) => (
+                  <React.Fragment key={idx}>
+                    <div className="flex flex-col items-center">
+                      <div
+                        className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 flex-shrink-0 ${
+                          activeStep === idx
+                            ? 'bg-primary text-white shadow-lg scale-110'
+                            : idx < activeStep
+                            ? 'bg-primary/70 text-white'
+                            : 'bg-muted text-gray-400 border-2 border-gray-300'
+                        }`}
+                      >
+                        {idx + 1}
+                      </div>
+                      <span className={`text-xs mt-2 text-center max-w-[60px] font-medium ${activeStep === idx ? 'text-primary' : 'text-muted-foreground'}`}>
+                        Paso {idx + 1}
+                      </span>
+                    </div>
+                    {idx < totalSteps - 1 && (
+                      <div className={`flex-1 h-1 rounded-full mx-2 transition-all duration-300 ${idx < activeStep ? 'bg-primary' : 'bg-muted'}`} style={{ minWidth: '40px' }}></div>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+
             <div>
               <CardTitle className="text-2xl">
                 {assetStage === 'collecting' ? 'Información de Activos' : 'Cuestionario LSO - Evaluación de Elegibilidad'}

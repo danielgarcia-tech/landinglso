@@ -3,13 +3,15 @@ import Hero from "@/components/Hero";
 import Stats from "@/components/Stats";
 import About from "@/components/About";
 import SecondChance from "@/components/SecondChance";
-import Testimonials from "@/components/Testimonials";
-import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import LiquidEther from "@/components/LiquidEther";
+import { useModal } from "@/contexts/ModalContext";
+import ContactModal from "@/components/ContactModal";
+import TestimonialsModal from "@/components/TestimonialsModal";
 
 const Index = () => {
+  const { showContactModal, showTestimonialsModal, setShowContactModal, setShowTestimonialsModal } = useModal();
   return (
     <div className="min-h-screen relative">
       <AnimatedBackground />
@@ -19,9 +21,9 @@ const Index = () => {
       <Stats />
       <About />
       <SecondChance />
-      <Testimonials />
-      <ContactForm />
       <Footer />
+      <ContactModal open={showContactModal} onOpenChange={setShowContactModal} />
+      <TestimonialsModal open={showTestimonialsModal} onOpenChange={setShowTestimonialsModal} />
     </div>
   );
 };
