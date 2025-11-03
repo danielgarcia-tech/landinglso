@@ -13,6 +13,8 @@ interface ContactModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const WEBHOOK_URL = "https://justiflow.com/webhook/lsoinicial";
+
 const ContactModal = ({ open, onOpenChange }: ContactModalProps) => {
   const [formData, setFormData] = useState({
     nombre: "",
@@ -35,17 +37,29 @@ const ContactModal = ({ open, onOpenChange }: ContactModalProps) => {
     setIsSubmitting(true);
 
     try {
-      // Simular envío de datos (sin Supabase)
-      console.log("Datos del formulario:", {
+      // Enviar a webhook
+      const payload = {
         nombre: formData.nombre,
         apellidos: formData.apellidos,
         email: formData.email,
         telefono: formData.telefono,
-        mensaje: formData.mensaje
+        mensaje: formData.mensaje,
+        timestamp: new Date().toISOString()
+      };
+
+      const response = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
-      
-      // Simular delay de envío
-      await new Promise(resolve => setTimeout(resolve, 800));
+
+      if (!response.ok) {
+        throw new Error(`Webhook error: ${response.status}`);
+      }
+
+      console.log("Datos enviados exitosamente al webhook:", payload);
 
       // Mostrar confirmación
       setConfirmedData({
@@ -56,8 +70,8 @@ const ContactModal = ({ open, onOpenChange }: ContactModalProps) => {
       toast.success("¡Formulario enviado exitosamente!");
       setFormData({ nombre: "", apellidos: "", email: "", telefono: "", mensaje: "" });
     } catch (error) {
-      console.error("Error:", error);
-      toast.error("Hubo un error. Por favor, inténtalo de nuevo.");
+      console.error("Error al enviar webhook:", error);
+      toast.error("Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo.");
     } finally {
       setIsSubmitting(false);
     }
