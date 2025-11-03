@@ -21,25 +21,37 @@ const SecondChance = () => {
 
   const process = [
     {
+      icon: CheckCircle2,
+      title: "1. Contacto inicial",
+      description: "Completa el formulario de contacto y uno de nuestros agentes te llamará para informarte sin compromiso"
+    },
+    {
       icon: FileText,
-      title: "1. Análisis gratuito",
-      description: "Revisamos tus deudas y confirmamos si cumples los requisitos legales"
+      title: "2. Completas nuestro formulario avanzado",
+      description: "Te preguntaremos por tu situación financiera, tus activos, tu pasivo y otros detalles relevantes para evaluar tu caso en detalle"
     },
     {
       icon: Gavel,
-      title: "2. Preparación del expediente",
-      description: "Recopilamos la documentación y elaboramos tu solicitud judicial"
+      title: "3. Te pedimos la documentación necesaria",
+      description: "Procederemos a analizar la documentación que nos envies para elaborar tu solicitud judicial"
     },
     {
       icon: CheckCircle2,
-      title: "3. Presentación ante el Juzgado",
+      title: "4. Presentación ante el Juzgado",
       description: "Nos encargamos de todo el proceso, sin que tengas que negociar con nadie"
     },
     {
       icon: Sparkles,
-      title: "4. Auto judicial",
-      description: "El juez declara canceladas tus deudas y te permite empezar de nuevo"
+      title: "5. Auto judicial",
+      description: "El juez dará inicio al procedimiento concursal y transcurrido el plazo legal, se dictará el auto por el que se te concederá la exoneración total de tus deudas"
+    },
+    {
+      icon: CheckCircle2,
+      title: "6. Nueva vida financiera",
+      description: "Disfruta de tu nueva vida libre de deudas y di adiós a las llamadas de tus acreedores y a la lista de morosos"
     }
+
+
   ];
 
   return (

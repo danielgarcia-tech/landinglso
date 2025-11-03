@@ -14,7 +14,7 @@ const PasswordProtection = ({ onAccessGranted }: PasswordProtectionProps) => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const correctPassword = import.meta.env.VITE_ACCESS_PASSWORD || "lso2025"; // Contraseña temporal
+  const correctPassword = import.meta.env.VITE_ACCESS_PASSWORD;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +22,10 @@ const PasswordProtection = ({ onAccessGranted }: PasswordProtectionProps) => {
 
     // Simular verificación
     setTimeout(() => {
-      if (password === correctPassword) {
+      if (!correctPassword) {
+        toast.error("Configuración de contraseña no encontrada");
+        setPassword("");
+      } else if (password === correctPassword) {
         toast.success("Acceso concedido");
         onAccessGranted();
       } else {
