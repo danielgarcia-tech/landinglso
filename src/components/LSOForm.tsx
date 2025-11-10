@@ -93,7 +93,7 @@ interface LSOFormProps {
 
 const LSOForm: React.FC<LSOFormProps> = ({ onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 8;
+  const totalSteps = 9; // Cambiado de 8 a 9 para incluir el resumen
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<LSOFormData>({
     nombre: '',
@@ -198,6 +198,82 @@ const LSOForm: React.FC<LSOFormProps> = ({ onClose }) => {
 
   const nextStep = () => setCurrentStep(Math.min(currentStep + 1, totalSteps));
   const prevStep = () => setCurrentStep(Math.max(currentStep - 1, 1));
+
+  const getDocumentosNecesarios = () => {
+    const documentos = [
+      'DNI/NIE',
+      'Última declaración de la renta'
+    ];
+
+    // Documentos según situación laboral
+    if (formData.situacionLaboral === 'empleado') {
+      documentos.push('Nóminas últimos 6 meses', 'Certificado de vida laboral');
+    } else if (formData.situacionLaboral === 'autonomo') {
+      documentos.push('Certificado de vida laboral', 'Últimas declaraciones trimestrales IVA', 'Modelo 130 últimos 6 meses');
+    } else if (formData.situacionLaboral === 'jubilado' || formData.situacionLaboral === 'incapacidad') {
+      documentos.push('Certificado de pensiones', 'Certificado de discapacidad (si aplica)');
+    }
+
+    // Documentos según patrimonio
+    if (formData.viviendaHabitual) {
+      documentos.push('Escrituras de propiedad');
+      if (formData.tieneHipoteca) {
+        documentos.push('Contrato hipoteca', 'Último recibo hipoteca');
+      }
+    } else {
+      documentos.push('Contrato de alquiler', 'Últimos recibos alquiler');
+    }
+
+    if (formData.tieneVehiculo) {
+      documentos.push('Permiso circulación vehículo', 'Ficha técnica vehículo');
+    }
+
+    if (formData.otrosBienes) {
+      documentos.push('Documentación otros bienes');
+    }
+
+    // Documentos según deudas
+    if (formData.deudaHipotecaria > 0) {
+      documentos.push('Contrato hipoteca');
+    }
+    if (formData.deudaBancaria > 0 || formData.deudaTarjetasCredito > 0) {
+      documentos.push('Contratos de préstamos/créditos');
+    }
+    if (formData.deudaHacienda > 0) {
+      documentos.push('Certificado deuda Hacienda');
+    }
+    if (formData.deudaSeguridadSocial > 0) {
+      documentos.push('Certificado deuda Seguridad Social');
+    }
+    if (formData.otrasDeudas) {
+      documentos.push('Documentación otras deudas');
+    }
+
+    // Documentos según situación familiar
+    if (formData.estadoCivil === 'casado' || formData.estadoCivil === 'separado' || formData.estadoCivil === 'divorciado') {
+      documentos.push('Convenio regulador (si aplica)', 'Sentencia divorcio/separación (si aplica)');
+    }
+
+    // Documentos según situación actual
+    if (formData.procedimientoEjecucion) {
+      documentos.push('Demanda ejecutiva', 'Embargos activos');
+    }
+    if (formData.embargos) {
+      documentos.push('Notificaciones de embargos');
+    }
+    if (formData.concursoPrevio) {
+      documentos.push('Sentencia concurso anterior');
+    }
+    if (formData.acuerdoExtrajudicial) {
+      documentos.push('Acuerdo extrajudicial de pagos');
+    }
+
+    // Documentos bancarios siempre necesarios
+    documentos.push('Extractos bancarios últimos 6 meses');
+
+    // Eliminar duplicados
+    return [...new Set(documentos)];
+  };
 
   const renderStep = () => {
     switch (currentStep) {
@@ -1087,23 +1163,10 @@ const LSOForm: React.FC<LSOFormProps> = ({ onClose }) => {
             </div>
             <div className="space-y-6">
               <div className="border rounded-lg p-4">
-                <h4 className="font-semibold text-gray-900 mb-4">Documentación Disponible</h4>
-                <p className="text-sm text-gray-600 mb-4">Marque los documentos de los que dispone actualmente:</p>
+                <h4 className="font-semibold text-gray-900 mb-4">Documentación Necesaria</h4>
+                <p className="text-sm text-gray-600 mb-4">Basándonos en sus respuestas, necesitará los siguientes documentos. Marque los que ya dispone:</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {[
-                    'DNI/NIE',
-                    'Última declaración de la renta',
-                    'Nóminas últimos 6 meses',
-                    'Certificado de vida laboral',
-                    'Extractos bancarios últimos 6 meses',
-                    'Contratos de préstamos/créditos',
-                    'Escrituras de propiedad',
-                    'Contratos de alquiler',
-                    'Facturas de deudas pendientes',
-                    'Notificaciones de embargos',
-                    'Sentencias judiciales',
-                    'Certificado de discapacidad (si aplica)'
-                  ].map((doc) => (
+                  {getDocumentosNecesarios().map((doc) => (
                     <div key={doc} className="flex items-center space-x-2">
                       <Checkbox
                         id={doc}
@@ -1121,6 +1184,12 @@ const LSOForm: React.FC<LSOFormProps> = ({ onClose }) => {
                       <Label htmlFor={doc} className="text-sm">{doc}</Label>
                     </div>
                   ))}
+                </div>
+                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Nota:</strong> Si no dispone de algún documento requerido, podemos ayudarle a obtenerlo. 
+                    Los documentos marcados como disponibles serán solicitados posteriormente para completar el expediente.
+                  </p>
                 </div>
               </div>
               
@@ -1144,6 +1213,172 @@ const LSOForm: React.FC<LSOFormProps> = ({ onClose }) => {
                 </AlertDescription>
               </Alert>
             </div>
+          </div>
+        );
+
+      case 9:
+        return (
+          <div className="space-y-6">
+            <div className="text-center">
+              <FileText className="mx-auto h-12 w-12 text-green-600 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900">Documentación y Observaciones</h3>
+              <p className="text-gray-600 mt-2">Documentos disponibles y comentarios adicionales</p>
+            </div>
+            
+            <div className="border rounded-lg p-6 bg-gray-50 max-h-96 overflow-y-auto">
+              <div className="space-y-6">
+                {/* Datos Personales */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3 border-b pb-2">📋 Datos Personales</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div><strong>Nombre:</strong> {formData.nombre} {formData.apellidos}</div>
+                    <div><strong>DNI/NIE:</strong> {formData.dni}</div>
+                    <div><strong>Fecha nacimiento:</strong> {formData.fechaNacimiento}</div>
+                    <div><strong>Teléfono:</strong> {formData.telefono}</div>
+                    <div><strong>Email:</strong> {formData.email}</div>
+                    <div><strong>Dirección:</strong> {formData.direccion}, {formData.codigoPostal} {formData.ciudad}, {formData.provincia}</div>
+                  </div>
+                </div>
+
+                {/* Situación Familiar */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3 border-b pb-2">👨‍👩‍👧‍👦 Situación Familiar</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div><strong>Estado civil:</strong> {formData.estadoCivil}</div>
+                    {formData.numeroDependientes > 0 && <div><strong>Dependientes:</strong> {formData.numeroDependientes}</div>}
+                    {(formData.estadoCivil === 'casado' || formData.estadoCivil === 'separado') && (
+                      <>
+                        <div><strong>Régimen matrimonial:</strong> {formData.regimenMatrimonial}</div>
+                        {formData.fechaMatrimonio && <div><strong>Fecha matrimonio:</strong> {formData.fechaMatrimonio}</div>}
+                      </>
+                    )}
+                    {(formData.estadoCivil === 'separado' || formData.estadoCivil === 'divorciado') && (
+                      <>
+                        {formData.fechaSeparacion && <div><strong>Fecha separación:</strong> {formData.fechaSeparacion}</div>}
+                        <div><strong>Convenio regulador:</strong> {formData.convenioSeparacion ? 'Sí' : 'No'}</div>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Situación Laboral */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3 border-b pb-2">💼 Situación Laboral</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div><strong>Situación:</strong> {formData.situacionLaboral}</div>
+                    <div><strong>Ingresos mensuales:</strong> {formData.ingresosMensuales.toLocaleString('es-ES')} €</div>
+                    {formData.empresaTrabajo && <div><strong>Empresa:</strong> {formData.empresaTrabajo}</div>}
+                    {formData.tiempoEmpleo && <div><strong>Tiempo en empleo:</strong> {formData.tiempoEmpleo}</div>}
+                  </div>
+                </div>
+
+                {/* Patrimonio */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3 border-b pb-2">🏠 Patrimonio</h4>
+                  <div className="space-y-2 text-sm">
+                    <div><strong>Vivienda habitual:</strong> {formData.viviendaHabitual ? 'Sí' : 'No'}</div>
+                    {formData.viviendaHabitual && (
+                      <div className="ml-4">
+                        <div>Valor: {formData.valorVivienda.toLocaleString('es-ES')} €</div>
+                        {formData.referenciaCatastral && <div>Referencia catastral: {formData.referenciaCatastral}</div>}
+                        <div>Hipoteca: {formData.tieneHipoteca ? `Sí (${formData.hipotecaPendiente.toLocaleString('es-ES')} €)` : 'No'}</div>
+                      </div>
+                    )}
+                    <div><strong>Vehículo:</strong> {formData.tieneVehiculo ? 'Sí' : 'No'}</div>
+                    {formData.tieneVehiculo && (
+                      <div className="ml-4">
+                        <div>Matrícula: {formData.matricula}</div>
+                        <div>Fecha matriculación: {formData.fechaMatriculacion}</div>
+                        <div>Valor: {formData.valorVehiculo.toLocaleString('es-ES')} €</div>
+                      </div>
+                    )}
+                    {formData.otrosBienes && <div><strong>Otros bienes:</strong> {formData.otrosBienes} ({formData.valorOtrosBienes.toLocaleString('es-ES')} €)</div>}
+                    {formData.cuentasBancarias > 0 && <div><strong>Cuentas bancarias:</strong> {formData.cuentasBancarias.toLocaleString('es-ES')} €</div>}
+                  </div>
+                </div>
+
+                {/* Gastos */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3 border-b pb-2">💰 Gastos Mensuales</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                    <div>Vivienda: {formData.gastoVivienda.toLocaleString('es-ES')} €</div>
+                    <div>Alimentación: {formData.gastoAlimentacion.toLocaleString('es-ES')} €</div>
+                    <div>Transporte: {formData.gastoTransporte.toLocaleString('es-ES')} €</div>
+                    <div>Salud: {formData.gastoSalud.toLocaleString('es-ES')} €</div>
+                    <div>Educación: {formData.gastoEducacion.toLocaleString('es-ES')} €</div>
+                    <div>Otros: {formData.otrosGastos.toLocaleString('es-ES')} €</div>
+                    <div className="col-span-2 font-semibold border-t pt-2">
+                      Total gastos: {(formData.gastoVivienda + formData.gastoAlimentacion + formData.gastoTransporte + 
+                        formData.gastoSalud + formData.gastoEducacion + formData.otrosGastos).toLocaleString('es-ES')} €
+                    </div>
+                  </div>
+                </div>
+
+                {/* Deudas */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3 border-b pb-2">💳 Deudas</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                    {formData.deudaHipotecaria > 0 && <div>Hipotecaria: {formData.deudaHipotecaria.toLocaleString('es-ES')} €</div>}
+                    {formData.deudaBancaria > 0 && <div>Bancaria: {formData.deudaBancaria.toLocaleString('es-ES')} €</div>}
+                    {formData.deudaTarjetasCredito > 0 && <div>Tarjetas crédito: {formData.deudaTarjetasCredito.toLocaleString('es-ES')} €</div>}
+                    {formData.deudaProveedores > 0 && <div>Proveedores: {formData.deudaProveedores.toLocaleString('es-ES')} €</div>}
+                    {formData.deudaHacienda > 0 && <div>Hacienda: {formData.deudaHacienda.toLocaleString('es-ES')} €</div>}
+                    {formData.deudaSeguridadSocial > 0 && <div>Seguridad Social: {formData.deudaSeguridadSocial.toLocaleString('es-ES')} €</div>}
+                    {formData.otrasDeudas && <div>Otras: {formData.otrasDeudas} ({formData.importeOtrasDeudas.toLocaleString('es-ES')} €)</div>}
+                    <div className="col-span-2 font-semibold border-t pt-2 text-red-600">
+                      Total deudas: {(formData.deudaHipotecaria + formData.deudaBancaria + formData.deudaTarjetasCredito + 
+                        formData.deudaProveedores + formData.deudaHacienda + formData.deudaSeguridadSocial + 
+                        formData.importeOtrasDeudas).toLocaleString('es-ES')} €
+                    </div>
+                  </div>
+                </div>
+
+                {/* Situación Actual */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3 border-b pb-2">⚖️ Situación Actual</h4>
+                  <div className="space-y-1 text-sm">
+                    {formData.procedimientoEjecucion && <div>• Tiene procedimiento de ejecución en curso</div>}
+                    {formData.embargos && <div>• Tiene embargos activos</div>}
+                    {formData.concursoPrevio && <div>• Ha estado en concurso de acreedores anteriormente</div>}
+                    {formData.acuerdoExtrajudicial && <div>• Ha intentado acuerdo extrajudicial de pagos</div>}
+                    {formData.situacionEspecial && <div><strong>Situación especial:</strong> {formData.situacionEspecial}</div>}
+                  </div>
+                </div>
+
+                {/* Documentos */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3 border-b pb-2">📄 Documentos Disponibles</h4>
+                  <div className="text-sm">
+                    {formData.documentosDisponibles.length > 0 ? (
+                      <ul className="list-disc list-inside">
+                        {formData.documentosDisponibles.map((doc, index) => (
+                          <li key={index}>{doc}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-gray-500">Ningún documento marcado como disponible</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Observaciones */}
+                {formData.observaciones && (
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-3 border-b pb-2">📝 Observaciones</h4>
+                    <p className="text-sm">{formData.observaciones}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Por favor, revise cuidadosamente todos los datos.</strong> Si encuentra algún error, 
+                puede volver atrás para corregirlo. Una vez enviado el formulario, nos pondremos en contacto 
+                con usted en un plazo máximo de 48 horas.
+              </AlertDescription>
+            </Alert>
           </div>
         );
 
