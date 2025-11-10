@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import LSOQuestionnaire from "./LSOQuestionnaire";
+import LSOForm from "./LSOForm";
 import logo from "@/assets/logo-rua.png";
 import { useModal } from "@/contexts/ModalContext";
 
@@ -88,7 +88,11 @@ const Hero = () => {
   return (
     <>
       {showQuestionnaire && (
-        <LSOQuestionnaire />
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-auto">
+          <div className="max-w-2xl w-full my-8">
+            <LSOForm onClose={() => setShowQuestionnaire(false)} />
+          </div>
+        </div>
       )}
       <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted pt-20">
         {/* Video de fondo */}
