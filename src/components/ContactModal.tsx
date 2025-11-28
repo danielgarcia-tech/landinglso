@@ -6,7 +6,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Send, CheckCircle, Mail } from "lucide-react";
-import logoRua from "@/assets/logo-rua.png";
 
 interface ContactModalProps {
   open: boolean;
@@ -93,7 +92,6 @@ const ContactModal = ({ open, onOpenChange }: ContactModalProps) => {
           <div className="space-y-6 py-4">
             {/* Logo y Check */}
             <div className="text-center space-y-4">
-              <img src={logoRua} alt="Rúa Libertad Legal" className="h-12 mx-auto" />
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
@@ -157,7 +155,6 @@ const ContactModal = ({ open, onOpenChange }: ContactModalProps) => {
                     Cuéntanos tu situación y te contactaremos para ayudarte
                   </DialogDescription>
                 </div>
-                <img src={logoRua} alt="Rúa Libertad Legal" className="h-10" />
               </div>
             </DialogHeader>
 

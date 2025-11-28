@@ -2,12 +2,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import LSOForm from "./LSOForm";
-import logo from "@/assets/logo-rua.png";
 import { useModal } from "@/contexts/ModalContext";
 
 const Hero = () => {
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
-  const { setShowContactModal, setShowTestimonialsModal } = useModal();
+  const { setShowContactModal, setShowTestimonialsModal, setShowCalculatorModal } = useModal();
   const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay
   const [isPaused, setIsPaused] = useState(false);
   const playerRef = useRef<any>(null);
@@ -111,11 +110,9 @@ const Hero = () => {
         {/* Contenido sobre el video */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
-            <img 
-              src={logo} 
-              alt="RÚA ABOGADOS" 
-              className="w-full max-w-lg mx-auto mb-12 drop-shadow-lg"
-            />
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-8 drop-shadow-lg">
+              RÚA ABOGADOS
+            </h1>
             
             {/* Video controls */}
             <div className="flex gap-2 justify-center mb-8">
@@ -170,6 +167,14 @@ const Hero = () => {
               >
                 📋 CUESTIONARIO LSO
                 <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button 
+                variant="secondary"
+                size="lg"
+                onClick={() => setShowCalculatorModal(true)}
+                className="text-base bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-50"
+              >
+                🧮 ¿CUÁNTO PUEDO RECUPERAR?
               </Button>
             </div>
           </div>

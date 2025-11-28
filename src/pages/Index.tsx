@@ -9,6 +9,7 @@ import LiquidEther from "@/components/LiquidEther";
 import { useModal } from "@/contexts/ModalContext";
 import ContactModal from "@/components/ContactModal";
 import TestimonialsModal from "@/components/TestimonialsModal";
+import CalculatorModal from "@/components/CalculatorModal";
 
 const Index = () => {
   const { showContactModal, showTestimonialsModal, setShowContactModal, setShowTestimonialsModal } = useModal();
@@ -24,6 +25,7 @@ const Index = () => {
       <Footer />
       <ContactModal open={showContactModal} onOpenChange={setShowContactModal} />
       <TestimonialsModal open={showTestimonialsModal} onOpenChange={setShowTestimonialsModal} />
+      <CalculatorModal />
     </div>
   );
 };
